@@ -28,6 +28,8 @@ INSERT_NEW_USER = "INSERT INTO users(username) VALUES (%s);"
 SELECT_GAMES = "SELECT * FROM games;"
 SELECT_UPCOMING_GAMES = "SELECT * FROM games WHERE game_date BETWEEN %s AND %s;"
 
+SELECT_TEAM = "SELECT * FROM games WHERE title = %s;"
+
 SELECT_WATCHED_GAMES = '''SELECT games.* FROM games
     JOIN watched ON games.id = watched.games_id
     JOIN users ON watched.users_username = users.username
@@ -73,6 +75,12 @@ def view_games(upcoming=False):
         next_week = next_week.timestamp()
         today_timestamp = datetime.datetime.today().timestamp()
         cursor.execute(SELECT_UPCOMING_GAMES, (today_timestamp, next_week,))
+    return cursor.fetchall()
+
+
+def search_games(name):
+    cursor = connection.cursor()
+    cursor.execute(SELECT_TEAM, (name,))
     return cursor.fetchall()
 
 
