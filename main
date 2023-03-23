@@ -2,12 +2,14 @@ import datetime
 import database
 
 menu = '''\nPlease Select an Option: 
-1. View Games this Week
-2. View All Games
-3. Mark Game as Watched
-4. View Watched Games
-5. Add User to App
-6. Exit
+1. Add New Game
+2. View Games this Week
+3. View All Games
+4. Mark Game as Watched
+5. View Watched Games
+6. Add User to App
+7. Search Games by Team 
+8. Exit
 '''
 
 welcome = 'Welcome to the Baseball Watchlist App!'
@@ -70,23 +72,31 @@ def prompt_view_watched_games():
             print("Username doesn't exits. ")
 
 
-while (user_input := input(menu)) != "6":
+
+while (user_input := input(menu)) != "8":
     if user_input == '1':
+        prompt_add_game()
+    elif user_input == '2':
         week = datetime.datetime.today()
         human_readable = week.strftime('%m-%d-%Y')
         upcoming_games = database.view_games(upcoming=True)
         print_games_list(f'Games the week of {human_readable}', upcoming_games)
-    elif user_input == '2':
+    elif user_input == '3':
         all_games = database.view_games()
         print_games_list("All Games 2023 Season", all_games)
-    elif user_input == '3':
-        prompt_watched_game()
     elif user_input == '4':
+        prompt_watched_game()
+    elif user_input == '5':
         username = prompt_view_watched_games()
         watched_games = database.view_watched_games(username)
         print_games_list(f"{username}'s Watched Games", watched_games)
-    elif user_input =="5":
+    elif user_input =="6":
         prompt_add_user()
+    elif user_input == "7":
+        name = input("Team name ")
+        team = database.search_games(name)
+        print_games_list(f"{name} Games", team)
     else:
+
         break
 
