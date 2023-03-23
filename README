@@ -1,0 +1,5 @@
+This was created using a combination of code writen by my professor and code that I wrote myself. 
+The orignal application was a Netflix watclist app.
+
+Using the Netlix idea as a precedent,I created an MLB watchlist app. My additions include a "Search by Team Name"
+feature, and an SQL cause that selects all teams playing this week. 
