@@ -1,0 +1,92 @@
+import datetime
+import database
+
+menu = '''\nPlease Select an Option: 
+1. View Games this Week
+2. View All Games
+3. Mark Game as Watched
+4. View Watched Games
+5. Add User to App
+6. Exit
+'''
+
+welcome = 'Welcome to the Baseball Watchlist App!'
+print(welcome)
+
+
+database.create_tables()
+
+
+def prompt_add_game():
+    title = input("Enter title of game (Ex: NYY @ NYM): ")
+    game_date = input('Enter date of game (MM-DD-YYYY): ')
+    try:
+        date_object = datetime.datetime.strptime(game_date, '%m-%d-%Y')
+        game_date = date_object.timestamp()
+    except ValueError:
+        print("Wrong date format, try again. ")
+        return None
+    database.add_game(title, game_date)
+
+
+def print_games_list(header, games):
+    print(f"--- {header} --- ")
+    for _id, title, game_date in games:
+        date_object = datetime.datetime.fromtimestamp(game_date)
+        human_readable = date_object.strftime("%b %d %Y")
+        print(f"{_id}: {title} on {human_readable}\n")
+    print("---------")
+
+
+def prompt_watched_game():
+    game_id = input("What id the ID of the game you watched: ")
+    username = input("What is your username: ")
+    watched_operation = database.watch_game(game_id, username)
+    if watched_operation:
+        print(f'Game with ID {game_id} marked as watched by {username}. ')
+    else:
+        print(f'Game with ID {game_id} does not exist')
+
+
+def prompt_add_user():
+    error_flag = True
+    while error_flag:
+        new_username = input("What would you like your username to be: ")
+        if database.user_exists(new_username):
+            print("Username already exists. Try again. ")
+        else:
+            database.add_user(new_username)
+            print(f"New username ({new_username}) added to app! ")
+            error_flag = False
+
+
+def prompt_view_watched_games():
+    username_doesnt_exist = True
+    while username_doesnt_exist:
+        username = input("Who's watched games do you want to see: ")
+        if database.user_exists(username):
+            return username
+        else:
+            print("Username doesn't exits. ")
+
+
+while (user_input := input(menu)) != "6":
+    if user_input == '1':
+        week = datetime.datetime.today()
+        human_readable = week.strftime('%m-%d-%Y')
+        upcoming_games = database.view_games(upcoming=True)
+        print_games_list(f'Games the week of {human_readable}', upcoming_games)
+    elif user_input == '2':
+        all_games = database.view_games()
+        print_games_list("All Games 2023 Season", all_games)
+    elif user_input == '3':
+        prompt_watched_game()
+    elif user_input == '4':
+        username = prompt_view_watched_games()
+        watched_games = database.view_watched_games(username)
+        print_games_list(f"{username}'s Watched Games", watched_games)
+    elif user_input =="5":
+        prompt_add_user()
+    else:
+        break
+
