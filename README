@@ -3,3 +3,5 @@ The orignal application was a Netflix watclist app.
 
 Using the Netlix idea as a precedent, I created an MLB watchlist app. My additions include a "Search by Team Name"
 feature, and an SQL cause that selects all teams playing this week. 
+
+The HTML and CSS is written by a friend. 
